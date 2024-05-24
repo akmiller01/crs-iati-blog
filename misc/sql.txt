@@ -1,0 +1,5 @@
+# IATI
+\copy (select iati_identifier, reporting_org_ref, x_transaction_year, funding_orgs, x_sector_code, x_recipient_code, x_transaction_value_usd from repo.iati_transactions where x_vocabulary_number=1 and reporting_org_secondary_reporter in ('0', 'false') and x_transaction_year>=2016 and x_transaction_year<=2023 and x_sector_vocabulary in ('1', '2', 'DAC', 'DAC-3') and x_transaction_type in ('Disbursement', 'Expenditure')) to '/tmp/iati_24052024.csv' csv header;
+
+# CRS
+\copy (select * from crs_current where year in (2016, 2017, 2018, 2019, 2020, 2021, 2022) and flow_name in ('Equity Investment', 'ODA Grants', 'ODA Loans')) to 'crs.csv' csv header;
