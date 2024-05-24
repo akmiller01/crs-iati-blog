@@ -52,6 +52,14 @@ abline(0,1)
 fit_rmse = rmse(dat_test$usd_disbursement_crs, dat_test$usd_disbursement_iati_fit)
 fit_rmse
 
+dat_agg = dat_test[,.(
+  usd_disbursement_crs=sum(usd_disbursement_crs),
+  usd_disbursement_iati_fit=sum(usd_disbursement_iati_fit),
+  usd_disbursement_iati=sum(usd_disbursement_iati)
+),
+by=.(year, recipient_name, recipient_iso3_code)]
+rmse(dat_agg$usd_disbursement_crs, dat_agg$usd_disbursement_iati)
+rmse(dat_agg$usd_disbursement_crs, dat_agg$usd_disbursement_iati_fit)
 
 dat_train = subset(dat, year < 2023)
 dat_predict = subset(dat, year < 2024)
