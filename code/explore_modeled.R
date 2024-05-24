@@ -62,6 +62,8 @@ dat = fread("data/modeled_crs_iati.csv")
 dat_agg = dat[,.(
   usd_disbursement_crs=sum(usd_disbursement_crs),
   usd_disbursement_crs_fit=sum(usd_disbursement_crs_fit),
+  usd_disbursement_crs_upr=sum(usd_disbursement_crs_upr),
+  usd_disbursement_crs_lwr=sum(usd_disbursement_crs_lwr),
   usd_disbursement_iati=sum(usd_disbursement_iati)
 ),
 by=.(year, sector_code)]
