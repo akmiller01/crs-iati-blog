@@ -64,7 +64,7 @@ dat$usd_disbursement_crs_upr[which(dat$usd_disbursement_crs_upr < 0)] = 0
 dat$usd_disbursement_crs_lwr[which(dat$usd_disbursement_crs_lwr < 0)] = 0
 
 
-dat_sub = subset(dat, year == 2022)
+dat_sub = subset(dat, year == 2022 & sector_code==121)
 p1 = ggplot(dat_sub, aes(x=usd_disbursement_crs, y=usd_disbursement_iati, color=sector_code)) +
   geom_abline(intercept=0, slope=1) +
   geom_point(alpha=0.5) +
@@ -83,7 +83,7 @@ p2 = ggplot(dat_sub, aes(ymin=usd_disbursement_crs_lwr, ymax=usd_disbursement_cr
   geom_abline(intercept=0, slope=1) +
   geom_point(alpha=0.5) +
   scale_y_continuous(expand = c(0, 0), labels=dollar) + # Force y-grid to start at x-axis
-  expand_limits(y=c(0, max(dat_sub$usd_disbursement_crs_fit*1.1,na.rm=T)),x=c(0, max(dat_sub$usd_disbursement_crs*1.1, na.rm=T))) + # Start at 0 if wanted, add 10% padding to max
+  expand_limits(y=c(0, max(dat_sub$usd_disbursement_iati*1.1,na.rm=T)),x=c(0, max(dat_sub$usd_disbursement_crs*1.1, na.rm=T))) + # Start at 0 if wanted, add 10% padding to max
   scale_x_continuous(expand = c(0, 0), labels=dollar) + # Set manually to avoid 2000.0
   di_style +
   labs(
