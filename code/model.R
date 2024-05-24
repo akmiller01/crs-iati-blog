@@ -14,11 +14,25 @@ rmse = function(vec1, vec2){
 #### End setup ####
 
 dat = fread("data/merged_crs_iati.csv")
+dat = subset(dat, !is.na(sector_code))
 dat = dat[,.(
   usd_disbursement_crs=sum(usd_disbursement_crs),
   usd_disbursement_iati=sum(usd_disbursement_iati)
 ),
 by=.(year, sector_code, recipient_name, recipient_iso3_code)]
+codes = unique(dat[,c("recipient_name", "recipient_iso3_code")])
+
+dat.grid = expand.grid(
+  sector_code=unique(dat$sector_code),
+  recipient_iso3_code=unique(dat$recipient_iso3_code),
+  year= unique(dat$year)
+  )
+dat.grid = merge(dat.grid, codes)
+
+dat = merge(dat, dat.grid, all=T)
+dat$usd_disbursement_crs[which(is.na(dat$usd_disbursement_crs))] = 0
+dat$usd_disbursement_iati[which(is.na(dat$usd_disbursement_iati))] = 0
+
 dat = dat[order(dat$recipient_name, dat$sector_code, dat$year)]
 dat[,"usd_disbursement_crs_t1":=shift(usd_disbursement_crs),by=.(recipient_name, sector_code)]
 dat[,"usd_disbursement_iati_t1":=shift(usd_disbursement_iati),by=.(recipient_name, sector_code)]
@@ -35,8 +49,7 @@ fit = lm(
     # Constant alpha
     usd_disbursement_iati+ # plus beta0 * IATI this year
     usd_disbursement_crs_t1+ # plus beta1 * CRS last year
-    delta_iati+ # plus beta2 * the absolute change in IATI from last year
-    sector_code # plus sector fixed effects
+    delta_iati # plus beta2 * the absolute change in IATI from last year
     , data=dat_train)
 summary(fit)
 confidence = predict.lm(fit, newdata = dat_test, interval = "confidence")
@@ -57,7 +70,7 @@ dat_agg = dat_test[,.(
   usd_disbursement_iati_fit=sum(usd_disbursement_iati_fit),
   usd_disbursement_iati=sum(usd_disbursement_iati)
 ),
-by=.(year, recipient_name, recipient_iso3_code)]
+by=.(year, sector_code)]
 rmse(dat_agg$usd_disbursement_crs, dat_agg$usd_disbursement_iati)
 rmse(dat_agg$usd_disbursement_crs, dat_agg$usd_disbursement_iati_fit)
 
@@ -68,8 +81,7 @@ fit = lm(
     # Constant alpha
     usd_disbursement_iati+ # plus beta0 * IATI this year
     usd_disbursement_crs_t1+ # plus beta1 * CRS last year
-    delta_iati+ # plus beta2 * the absolute change in IATI from last year
-    sector_code # plus sector fixed effects
+    delta_iati # plus beta2 * the absolute change in IATI from last year
   , data=dat_train)
 summary(fit)
 confidence = predict.lm(fit, newdata = dat_predict, interval = "confidence")
