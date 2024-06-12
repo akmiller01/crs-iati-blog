@@ -1,5 +1,5 @@
 #### Setup ####
-list.of.packages <- c("rstudioapi", "data.table")
+list.of.packages <- c("rstudioapi", "data.table", "gtsummary")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only=T)
@@ -52,6 +52,7 @@ fit = lm(
     delta_iati # plus beta2 * the absolute change in IATI from last year
     , data=dat_train)
 summary(fit)
+tbl_regression(fit) %>% add_glance_source_note(include=c("nobs","adj.r.squared","p.value"))
 confidence = predict.lm(fit, newdata = dat_test, interval = "confidence")
 dat_test$usd_disbursement_iati_fit = confidence[,1]
 dat_test$usd_disbursement_iati_lwr = confidence[,2]
