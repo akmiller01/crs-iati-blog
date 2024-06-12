@@ -71,6 +71,7 @@ iati_agg$recipient_iso3_code = countrycode(
 iati_agg = subset(iati_agg, !is.na(recipient_iso3_code))
 iati_agg$recipient_iso2_code = NULL
 iati_agg$sector_code = as.character(iati_agg$sector_code)
+iati_agg$donor_name = stringr::str_replace_all(iati_agg$donor_name, "\\h", " ") # Replace horizontal space
 
 crs_agg = data.table(crs)[,.(usd_disbursement_crs=sum(usd_disbursement, na.rm=T)),by=.(
   donor_code, donor_name, year, recipient_iso3_code, sector_code

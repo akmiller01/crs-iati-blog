@@ -62,11 +62,10 @@ dat = subset(dat, year < 2023)
 
 ggplot(dat, aes(x=usd_disbursement_iati, y=usd_disbursement_crs)) +
   geom_abline(intercept=0, slope=1) +
-  geom_point(alpha=0.5) +
-  scale_color_manual(values=c(reds[1], blues[1])) + # Choose colour here
+  geom_point(alpha=0.5, color=reds[1]) +
   scale_y_continuous(expand = c(0, 0), labels=dollar) + # Force y-grid to start at x-axis
   expand_limits(y=c(0, max(dat$usd_disbursement_crs*1.1))) + # Start at 0 if wanted, add 10% padding to max
-  scale_x_continuous(breaks=c(2000, 2001, 2002)) + # Set manually to avoid 2000.0
+  scale_x_continuous(breaks=c(2016, 2018, 2020, 2022)) + # Set manually to avoid 2000.0
   di_style +
   labs(
     y="CRS reported value (US$ millions)",
