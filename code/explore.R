@@ -60,15 +60,14 @@ rotate_y_text_45 = theme(
 dat = fread("data/merged_crs_iati.csv")
 dat = subset(dat, year < 2023)
 
-ggplot(dat, aes(x=usd_disbursement_iati, y=usd_disbursement_crs)) +
+ggplot(dat, aes(x=usd_disbursement_crs, y=usd_disbursement_iati)) +
   geom_abline(intercept=0, slope=1) +
   geom_point(alpha=0.5, color=reds[1]) +
   scale_y_continuous(expand = c(0, 0), labels=dollar) + # Force y-grid to start at x-axis
-  expand_limits(y=c(0, max(dat$usd_disbursement_crs*1.1))) + # Start at 0 if wanted, add 10% padding to max
+  expand_limits(y=c(0, max(dat$usd_disbursement_iati*1.1))) + # Start at 0 if wanted, add 10% padding to max
   scale_x_continuous(breaks=c(2016, 2018, 2020, 2022)) + # Set manually to avoid 2000.0
   di_style +
   labs(
-    y="CRS reported value (US$ millions)",
-    x="IATI reported value (US$ millions)",
-    color="Humanitarian"
+    y="IATI reported value (US$ millions)",
+    x="CRS reported value (US$ millions)"
   )
